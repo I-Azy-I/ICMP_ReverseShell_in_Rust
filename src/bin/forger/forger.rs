@@ -139,13 +139,13 @@ pub fn send(icmp_packet: Vec<u8>, ip_dest: Ipv4Addr, ip_source: Option<Ipv4Addr>
     match packet {
         Some(packet) => {
             match tx.send_to(packet, IpAddr::V4(ip_dest)) {
-                Ok(_) => println!("Paquet envoyé!"),
+                Ok(_) => println!("Packet sent!"),
                 Err(e) => panic!("failed to send packet: {}", e),
             }
         }
         None => {
             match tx.send_to(icmp_packet, IpAddr::V4(ip_dest)) {
-                Ok(_) => println!("Paquet envoyé!"),
+                Ok(_) => println!("Packet sent!"),
                 Err(e) => panic!("failed to send packet: {}", e),
             }
         }
