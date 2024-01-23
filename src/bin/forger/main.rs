@@ -1,10 +1,11 @@
-use std::net::{Ipv4Addr};
+use std::net::Ipv4Addr;
+use std::str::FromStr;
 
 use clap::Parser;
 
-mod forger;
 use forger::forge;
-use std::str::FromStr;
+
+mod forger;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -25,19 +26,19 @@ struct Args {
     #[arg(short, long)]
     port_reverse_host: u16,
 
-    /// configuration for the sniffer
+    /// configuration for the sniffer (not implemented yet)
     #[arg(short, long)]
     config: Option<String>,
 
-    ///obfuscation key (byte array in B64)
+    ///obfuscation key (byte array in B64) (not implemented yet)
     #[arg(short, long)]
     key: Option<String>,
 
-    /// identifier detected by the sniffer
+    /// identifier detected by the sniffer  (not implemented yet)
     #[arg(short, long)]
     identifier: Option<u16>,
 
-    ///validation Bytes (bytes at the beginning of the payload that need to correspond)
+    ///validation Bytes (bytes at the beginning of the payload that need to correspond)  (not implemented yet)
     #[arg(short, long)]
     validation_bytes: Option<String>
 }
@@ -80,7 +81,7 @@ fn main() {
     let port_reverse_host = args.port_reverse_host;
 
 
-
+    //TODO add key, identifier, validation bytes, choice of obfuscation, choice of size
     let icmp_packet = forge( ip_reverse_host, port_reverse_host, None, None, true, true, None);
     forger::send(icmp_packet, ip_dest, ip_src);
 }

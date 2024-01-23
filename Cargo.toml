@@ -1,0 +1,20 @@
+[package]
+name = "icmp_RS"
+version = "0.1.0"
+edition = "2021"
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+subprocess = "0.2.9"
+clap = { version = "4.4.14", features = ["derive"] }
+base64 = "0.21.6"
+
+
+
+
+[dependencies.pnet]
+version = "0.34.0"
+
+
