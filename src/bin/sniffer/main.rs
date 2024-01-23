@@ -1,11 +1,11 @@
+use std::net::Ipv4Addr;
+use std::process::Command;
+
+use icmp_rust::VALIDATION_BYTES;
+use sniffer::sniff;
 
 mod sniffer;
 
-
-use std::net::Ipv4Addr;
-use std::process::Command;
-use icmp_rust::VALIDATION_BYTES;
-use sniffer::sniff;
 
 const  DEBUG: bool = true;
 
@@ -36,6 +36,8 @@ fn open_socat_connection(ip: String, port: String){
         .expect("Socat Failed");
 
 }
+
 fn main() {
+    //TODO better way to choose interface
     sniff(true, None, None, ping_detected);
 }

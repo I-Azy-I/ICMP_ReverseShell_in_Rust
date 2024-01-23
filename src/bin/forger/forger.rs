@@ -99,6 +99,7 @@ pub fn forge<'a>(
     icmp_packet.to_immutable().packet().to_vec()
 }
 
+
 pub fn send(icmp_packet: Vec<u8>, ip_dest: Ipv4Addr, ip_source: Option<Ipv4Addr>) {
     let icmp_packet = MutableEchoRequestPacket::owned(icmp_packet).expect("not enough place to forge icmp");
     //select protocol
@@ -120,23 +121,11 @@ pub fn send(icmp_packet: Vec<u8>, ip_dest: Ipv4Addr, ip_source: Option<Ipv4Addr>
 
         let packet = [ip_header.packet(), icmp_packet.packet()].concat();
 
-        (MutableIpv4Packet::owned(packet).expect("not enough place to forge ip"),
+        (Some(MutableIpv4Packet::owned(packet).expect("not enough place to forge ip")),
          Layer3(IpNextHeaderProtocols::Icmp))
     } else {
-        (icmp_packet.to_immutable(), Layer4(Ipv4(IpNextHeaderProtocols::Icmp)))
+        (None, Layer4(Ipv4(IpNextHeaderProtocols::Icmp)))
     };
-
-    println!("Sending packet with: ");
-    println!("  - sequence number: {}", icmp_packet.get_sequence_number());
-    println!("  - identifier: {}", icmp_packet.get_identifier());
-    println!("  - checksum: {}", icmp_packet.get_checksum());
-    println!("  - payload: {:?}", icmp_packet.payload());
-    println!("  - destination: {}", packet.get_destination());
-    println!("  - source: {}", packet.get_source());
-    println!("  - checksum: {}", packet.get_checksum());
-    println!("  - version: {}", packet.get_version());
-    println!("  - header length: {}", packet.get_header_length());
-    println!("  - total length: {}", packet.get_total_length());
 
 
     // Create a new transport channel, dealing with layer 4 packets on a test protocol    let ip_reverse_host = Ipv4Addr::from(ip_reverse_host);
@@ -147,8 +136,18 @@ pub fn send(icmp_packet: Vec<u8>, ip_dest: Ipv4Addr, ip_source: Option<Ipv4Addr>
             e
         ),
     };
-    match tx.send_to(packet, IpAddr::V4(ip_dest)) {
-        Ok(_) => println!("Paquet envoyé!"),
-        Err(e) => panic!("failed to send packet: {}", e),
+    match packet {
+        Some(packet) => {
+            match tx.send_to(packet, IpAddr::V4(ip_dest)) {
+                Ok(_) => println!("Paquet envoyé!"),
+                Err(e) => panic!("failed to send packet: {}", e),
+            }
+        }
+        None => {
+            match tx.send_to(icmp_packet, IpAddr::V4(ip_dest)) {
+                Ok(_) => println!("Paquet envoyé!"),
+                Err(e) => panic!("failed to send packet: {}", e),
+            }
+        }
     }
 }

@@ -18,11 +18,11 @@ struct Args {
     #[arg(short, long)]
     src: Option<String>,
 
-    ///ip of the reverse shell
+    ///ip for the reverse shell
     #[arg(short, long)]
     reverse_host: String,
 
-    ///port of the reverse shell
+    ///port for the reverse shell
     #[arg(short, long)]
     port_reverse_host: u16,
 
@@ -67,16 +67,12 @@ fn main() {
             None => None
         };
     let ip_reverse_host: Ipv4Addr =
-        match args.reverse_host  {
-            Some(ip) =>
-                match Ipv4Addr::from_str(ip.as_str()) {
-                    Ok(ip) => ip,
-                    Err(_) => {
-                        println!("Invalid ip");
-                        return;
-                    }
-                },
-            None => Ipv4Addr::new(127,0,0,1)
+        match Ipv4Addr::from_str(args.reverse_host.as_str()) {
+            Ok(ip) => ip,
+            Err(_) => {
+                println!("Invalid ip");
+                return;
+            }
         };
     let port_reverse_host = args.port_reverse_host;
 
